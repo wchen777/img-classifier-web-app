@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title> Image Classifier Web App Workshop </title>
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <!-- title  -->
+    <div class="text">
+      <h1> Image Classifier for Handwritten Digits Web App </h1>
+    </div>
+
+    <!-- canvas -->
+    <div>
+      <canvas id="canvas" width="400" height="400"
+        style="border:4px solid; border-radius: 5px; cursor: crosshair; margin: auto; padding: 0; display: block;">
+      </canvas>
+    </div>
+
+    <!-- buttons and output -->
+    <div class="text">
+      <p>
+        <input type="button" id="predictButton" class="btn btn-primary" value="Predict!" style="">
+        <input type="button" id="clearButton" class="btn btn-primary" value="Clear Canvas" style="">
+      </p>
+      <h1 id="result"><span></span></h1>
+    </div>
+
+    <!-- dependencies and scripts -->
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+
+    <!-- POST request script -->
+    <script type="text/javascript">
+
+      $('#predictButton').click(function(){
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var canvasObj = document.getElementById("canvas");
+        var img = canvasObj.toDataURL().split(';base64,')[1];
+        $.ajax({
+          type: "POST",
+          url: $SCRIPT_ROOT + "/submit",
+          data: img,
+          success: function(data){
+            $('#result').text('Predicted Output: ' +data);
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
